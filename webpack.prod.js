@@ -1,13 +1,20 @@
 const HtmlWebPackPlugin       = require('html-webpack-plugin'); 
 const MiniCssExtractPlugin    = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const MinifyPlugin            = require('babel-minify-webpack-plugin');
+//const MinifyPlugin            = require('babel-minify-webpack-plugin');
 const { CleanWebpackPlugin }  = require('clean-webpack-plugin');
+const TercerPlugin            = require('terser-webpack-plugin')
 
 module.exports = {
     mode: 'production',
     optimization: {
-        minimizer: [ new OptimizeCssAssetsPlugin() ]
+        minimize: true,
+        minimizer: [ 
+            new TercerPlugin({
+                test: /\.js(\?.*)?$/i,
+            }),
+            new OptimizeCssAssetsPlugin() 
+        ]
     },
     output: {
         filename: 'main.[contentHash].js'
@@ -62,13 +69,13 @@ module.exports = {
     plugins: [
         new HtmlWebPackPlugin({
             template: './src/index.html',
-            filename: './index.html'
+            filename: '/index.html'
         }),
         new MiniCssExtractPlugin({
             filename: '[name].[contentHash].css',
             ignoreOrder: false
         }),
-        new MinifyPlugin(),
+        //new MinifyPlugin(),
         new CleanWebpackPlugin(),
     ]
 
